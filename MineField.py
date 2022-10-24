@@ -1,6 +1,5 @@
 import random
 import ScreenGrid
-import Object
 import consts
 
 
@@ -9,43 +8,66 @@ def change_matrix_state(row, col):
     ScreenGrid.screen_grid[row][col] = 'Mine'
 
 
+# check if the soldier stepped on a mine
+def is_on_mine(row, col):
+    if ScreenGrid.screen_grid[row][col] == consts.MINE:
+        return True
+    else:
+        return False
+
+
 # check if the place in matrix is clear with no bombs
 def is_clear(row, col):
+    if col+2 >= consts.NUM_COLS or col-2 <= 0:
+        return False
+
+    elif is_on_mine(row, col+2) or is_on_mine(row, col-2):
+        return False
+
     col -= 1
     if col < 0:
         return False
 
     else:
-        for i in range(consts.MINE_WIDTH):
-            if not ScreenGrid.screen_grid[row][col] == 'EMPTY' or Object.is_touching_flag(row, col):
+        for i in range(3):
+            if is_on_mine(row, col):
                 return False
+            # if Object.is_touching_flag(row, col):
+            #     print('False3 clear')
+            #     return False
             col += 1
+
         return True
 
 
 # pick a random place for a mine in the screen
 def spread_a_mine():
-    current_row_center = random.randint(0, consts.NUM_ROWS)
-    current_col_center = random.randint(0, consts.NUM_COLS)
+    row_center = random.randint(0, consts.NUM_ROWS-1)
+    col_center = random.randint(0, consts.NUM_COLS-1)
 
-    while not is_clear(current_row_center, current_col_center):
-        current_row_center = random.randint(0, consts.NUM_ROWS)
-        current_col_center = random.randint(0, consts.NUM_COLS)
+    while not is_clear(row_center, col_center):
+        row_center = random.randint(0, consts.NUM_ROWS-1)
+        col_center = random.randint(0, consts.NUM_COLS-1)
 
-    return current_row_center, current_col_center
+    return row_center, col_center
 
 
-# check if the soldier stepped on a mine
-def is_on_mine(row, col):
-    if ScreenGrid.screen_grid[row][col] != 'Empty':
-        return True
+def calc_center_x(row):
+    if row == 0:
+        return 0
     else:
-        return False
+        return row*consts.SQUARE_SIDE
 
 
-def calc_center_x(col):
-    return col*consts.SQUARE_SIDE - consts.SQUARE_SIDE
+def calc_center_y(col):
+    if col == 0:
+        return 0
+    else:
+        return col*consts.SQUARE_SIDE
 
 
-def calc_center_y(row):
-    return row*consts.SQUARE_SIDE - consts.SQUARE_SIDE
+def calc_coordinate(coordinate):
+    if coordinate == 0:
+        return 0
+    return coordinate//consts.SQUARE_SIDE
+
