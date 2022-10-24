@@ -4,13 +4,28 @@ import consts
 
 def move_the_soldier(state, x, y):
     if state == consts.LEFT:
-        return x, y-consts.SQUARE_SIDE
-    elif state == consts.RIGHT:
-        return x, y+consts.SQUARE_SIDE
-    elif state == consts.UP:
         return x-consts.SQUARE_SIDE, y
-    elif state == consts.DOWN:
+    elif state == consts.RIGHT:
         return x+consts.SQUARE_SIDE, y
+    elif state == consts.UP:
+        return x, y-consts.SQUARE_SIDE
+    elif state == consts.DOWN:
+        return x, y+consts.SQUARE_SIDE
+
+
+def soldier_move(state, x, y):
+    new_x, new_y = x, y
+    if state == consts.LEFT:
+        new_x -= 1
+    if state == consts.RIGHT:
+        new_x += 1
+    if state == consts.UP:
+        new_y -= 1
+    if state == consts.DOWN:
+        new_x += 1
+
+    ScreenGrid.screen_grid[new_x][new_y] = ScreenGrid.screen_grid[x][y]
+    ScreenGrid.screen_grid[x][y] = None
 
 
 def get_soldier_position():
@@ -22,11 +37,6 @@ def get_soldier_position():
 
 
 def set_soldier_position(x, y):
-    pos = get_soldier_position()
-    pos_x = pos[0]
-    pos_y = pos[1]
-
     screen_grid = ScreenGrid.screen_grid
-    screen_grid[pos_x][pos_y] = consts.EMPTY
     screen_grid[x][y] = consts.SOLDIER
 
